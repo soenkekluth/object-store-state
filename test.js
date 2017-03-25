@@ -1,5 +1,5 @@
 import { serial as test } from 'ava';
-import store from './';
+import store from './lib/index';
 
 test.beforeEach(t => {
   t.context.store = store({ user: {
@@ -43,16 +43,16 @@ test('.set() with object and .get()', t => {
 
 
 test('.subscribe() and .set()', t => {
+
+
+  const subscriber = t.context.store.subscribe('user.surname', (evt) => {
+    const {type, key, value, state} = evt;
+    t.is(type, 'user.surname');
+    t.is(value, 'panic');
+  })
+
   t.context.store.set('user.surname', 'panic');
-
-  t.is(t.context.store.get('user').surname, 'panic');
-
-  // const subscriber = t.context.store.subscribe('peter', (evt) => {
-  //   const {type, value, state} = evt;
-  //   t.is(type, 'peter');
-  //   t.is(value, 'panic');
-  //   t.deepEqual(state, { peter: 'panic' });
-  // })
+  t.is(t.context.store.get('user.surname'), 'panic');
 
   // t.context.store.set({ peter: 'panic' });
 

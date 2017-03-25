@@ -6,8 +6,8 @@
   "jsnext:main": "index.js",
   "main": "lib/index.js",
   "scripts": {
-    "test": "ava test.js",
-    "build:lib": "cross-env NODE_ENV=production babel index.js -o lib/index.js"
+    "test": "ava test.js --verbose",
+    "build:lib": "cross-env NODE_ENV=production babel src -d lib"
   },
   "repository": {
     "type": "git",

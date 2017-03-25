@@ -1,9 +1,11 @@
 import EventDispatcher from 'eventdispatcher';
 import assign from 'object-assign';
 import isPlainObj from 'is-plain-obj';
-import { get, set, insert, push, del, has } from 'object-path';
+import {objToDot} from './utils';
+import {get, set, insert, push, del, has } from 'object-path';
 
-// @autobind
+
+
 export class Store {
 
   constructor(initialState = {}) {
@@ -12,20 +14,23 @@ export class Store {
     this.stateClone = assign({}, this.state);
   }
 
-  update(nextState) {
+  __update(nextState, partial, pathValue) {
     this.prevState = assign({}, this.state);
-    this.state = assign({}, this.state, nextState);
+    this.state = assign({}, nextState);
     this.stateClone = assign({}, this.state);
 
-    this.dispatcher.trigger('state:update', { state: this.getState() });
+    this.dispatcher.trigger('update', { state: this.getState(), payload:partial });
 
-    const props = Object.keys(nextState);
-    for (let i = 0, l = props.length; i < l; i++) {
-      this.dispatcher.trigger(props[i], {
-        key: props[i],
-        value: this.get(props[i]),
-        state: this.getState(),
-      });
+    if(pathValue){
+      const paths = Object.keys(pathValue);
+      for (let i = 0, l = paths.length; i < l; i++) {
+        // console.log('trigger', paths[i], pathValue[paths[i]]);
+        this.dispatcher.trigger(paths[i], {
+          key: paths[i],
+          value: pathValue[paths[i]],
+          state: this.getState(),
+        });
+      }
     }
     return this.stateClone;
   }
@@ -42,17 +47,36 @@ export class Store {
     this.dispatcher.on(key, handler);
   }
 
+  // ensureExists(path, value) {
+  //   return this.set(path, value, true);
+  // }
+
   get(key, fallback = null) {
     return get(this.getState(), key, fallback);
   }
 
-  set(keyOrObject, value = null) {
-    if(isPlainObj(keyOrObject) && !value){
-      return this.update(keyOrObject);
+  set(...args) {
+
+    const state = this.getState();
+    let partial = {};
+    let pathValue = {};
+    if(args.length === 2 && (typeof args[0] === 'string')){
+      set(state, args[0], args[1]);
+      set(partial, args[0], args[1]);
+      pathValue[args[0]] = args[1];
+    }else if(args.length === 1 && isPlainObj(args[0])){
+      const paths = objToDot(args[0]);
+      const keys = Object.keys(paths);
+      for(let i = 0, l = keys.length; i < l; i++) {
+        pathValue[keys[i]] = paths[keys[i]];
+        set(state, keys[i], paths[keys[i]]);
+      }
+
+      partial = assign({}, args[0]);
+
     }
-    if(typeof keyOrObject === 'string' && value) {
-      return this.update(keyOrObject);
-    }
+
+    this.__update(state, partial, pathValue);
   }
 
   has(key) {
@@ -60,10 +84,11 @@ export class Store {
   }
 
   delete(key) {
+    const partial = get(this.getState(), key);
     del(this.getState(), key);
-    this.update(this.getState());
+    this.__update(this.getState(), partial);
+    this.dispatcher.trigger(key, { state: this.getState(), payload:null });
   }
-
 
   clone() {
     return state(this.cloneState());
@@ -76,7 +101,6 @@ export class Store {
   toJSON() {
     return JSON.stringify(this.getState(), null, 2);
   }
-
 
   get size() {
     return Object.keys(this.state).length;
@@ -99,7 +123,6 @@ const store = (initialState = {}) => {
     // toJSONString: newStore.toJSONString.bind(newStore),
   };
 };
-
 
 export { store };
 export default store;
