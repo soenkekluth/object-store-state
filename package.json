@@ -16,6 +16,11 @@
     "type": "git",
     "url": "git+https://github.com/soenkekluth/object-store-state.git"
   },
+  "files": [
+    "lib",
+    "src",
+    "es"
+  ],
   "keywords": [
     "deep",
     "path",
