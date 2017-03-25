@@ -7,13 +7,9 @@ node_modules
 coverage
 
 # production
-/build
-/build_static
-/static
-/KIA_JA*
-/release
+
 # project
-/material
+
 TODO.md
 
 # misc
@@ -26,3 +22,15 @@ npm-debug.log
 .idea
 TODO
 yarn-error.log
+
+# OS or Editor folders
+npm-debug.log
+# Project folders to ignore
+node_modules
+.tern-port
+.nyc_output
+*.map
+/lib
+coverage
+/es
+/material

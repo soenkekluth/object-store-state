@@ -1,13 +1,16 @@
 {
   "name": "object-store-state",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "observable stateful object store",
-  "module": "index.js",
-  "jsnext:main": "index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
   "main": "lib/index.js",
   "scripts": {
     "test": "ava test.js --verbose",
-    "build:lib": "cross-env NODE_ENV=production babel src -d lib"
+    "build": "yarn build:lib && yarn build:es",
+    "build:dist": "cross-env BABEL_ENV=lib babel src -d lib",
+    "build:lib": "cross-env BABEL_ENV=lib babel src -d lib",
+    "build:es": "cross-env BABEL_ENV=es babel src -d es"
   },
   "repository": {
     "type": "git",
@@ -43,8 +46,11 @@
     "ava": "0.18.2",
     "babel-cli": "6.24.0",
     "babel-core": "6.24.0",
+    "babel-plugin-add-module-exports": "0.2.1",
     "babel-plugin-transform-es2015-modules-commonjs": "6.24.0",
+    "babel-plugin-transform-runtime": "6.23.0",
     "babel-preset-es2015-tree-shaking": "1.0.1",
+    "bablyfill": "1.0.3",
     "cross-env": "3.2.4",
     "xo": "0.18.0"
   }
