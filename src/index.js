@@ -45,6 +45,11 @@ export class Store {
 
   subscribe(key, handler) {
     this.dispatcher.on(key, handler);
+    return () => this.unsubscribe(key, handler);
+  }
+
+  unsubscribe(key, handler){
+    this.dispatcher.off(key, handler);
   }
 
   // ensureExists(path, value) {
@@ -113,6 +118,7 @@ const store = (initialState = {}) => {
     getState: newStore.getState.bind(newStore),
     getPrevState: newStore.getPrevState.bind(newStore),
     subscribe: newStore.subscribe.bind(newStore),
+    unsubscribe: newStore.unsubscribe.bind(newStore),
     get: newStore.get.bind(newStore),
     set: newStore.set.bind(newStore),
     has: newStore.has.bind(newStore),

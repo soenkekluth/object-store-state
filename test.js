@@ -9,7 +9,25 @@ test.beforeEach(t => {
   }});
 });
 
-test('.set() and .get()', t => {
+
+test('.set() called with a string as key and a second argument for the value', t => {
+  t.context.store.set('string', 'isset');
+  // t.context.store.set('baz.boo', true);
+  t.is(t.context.store.get('string'), 'isset');
+  // t.is(t.context.store.get('baz.boo'), true);
+});
+
+
+test('.set() called with one string of dot seperated keys and anargument for the value', t => {
+  t.context.store.set('deep.obj.note', 'done');
+  // t.context.store.set('baz.boo', true);
+  t.is(t.context.store.get('deep.obj.note'), 'done');
+  // t.is(t.context.store.get('baz.boo'), true);
+});
+
+
+
+test('.set() a flat key value object - and .get() the value by key', t => {
   t.context.store.set({ peter: 'pan' });
   // t.context.store.set('baz.boo', true);
   t.is(t.context.store.get('peter'), 'pan');
@@ -17,7 +35,8 @@ test('.set() and .get()', t => {
 });
 
 
-test('.set() with object and .get()', t => {
+
+test('.set() nested object and .get() values with dot notation', t => {
   t.context.store.set({
     foo1: 'bar1',
     foo2: 'bar2',
@@ -42,13 +61,15 @@ test('.set() with object and .get()', t => {
 });
 
 
-test('.subscribe() and .set()', t => {
+test('.subscribe() to a nested key by dot notation and get event when its changed by .set()', t => {
 
 
-  const subscriber = t.context.store.subscribe('user.surname', (evt) => {
+  const unsubscribe = t.context.store.subscribe('user.surname', (evt) => {
     const {type, key, value, state} = evt;
     t.is(type, 'user.surname');
     t.is(value, 'panic');
+
+    unsubscribe();
   })
 
   t.context.store.set('user.surname', 'panic');
@@ -57,6 +78,79 @@ test('.subscribe() and .set()', t => {
   // t.context.store.set({ peter: 'panic' });
 
 });
+
+
+
+test('add another store to the actual one', t => {
+
+  const initialState ={
+    name: 'myStore',
+    active: false,
+    details: {
+      some: 'thing'
+    }
+  };
+  const newStore = store(initialState);
+
+
+  t.context.store.set('newStore', newStore);
+  t.deepEqual(t.context.store.get('newStore').getState(), initialState);
+});
+
+
+
+
+test('subscribe to a key of a nested store through the main store by dot notation and set the value by dot notation through the main store', t => {
+
+  const initialState ={
+    name: 'myStore',
+    active: false,
+    details: {
+      some: 'thing'
+    }
+  };
+  const newStore = store(initialState);
+
+
+  t.context.store.set('newStore', newStore);
+  t.deepEqual(t.context.store.get('newStore').getState(), initialState);
+
+  t.context.store.subscribe('newStore.name', (e) => {
+    t.is(e.type, 'newStore.name');
+    t.is(e.value, 'mystore');
+  });
+
+  t.context.store.set('newStore.name', 'mystore');
+});
+
+
+
+
+test('subscribe to a key of a nested store and set the value by dot notation through the main store', t => {
+
+  const initialState ={
+    name: 'myStore',
+    active: false,
+    details: {
+      some: 'thing'
+    }
+  };
+  const newStore = store(initialState);
+
+
+  t.context.store.set('newStore', newStore);
+  t.deepEqual(t.context.store.get('newStore').getState(), initialState);
+
+  newStore.subscribe('name', (e) => {
+    t.is(e.type, 'name');
+    t.is(e.value, 'mystore');
+  });
+
+  t.context.store.set('newStore.name', 'mystore');
+  // newStore.set('name', 'mystore');
+});
+
+
 
 
 
