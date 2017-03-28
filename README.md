@@ -31,6 +31,18 @@ console.log(myStore.get('bar'));
 myStore.delete('awesome');
 console.log(myStore.get('awesome'));
 //=> undefined
+
+myStore.set('my.super.obj', {foo: 'bar'});
+console.log(myStore.get('my.super.obj'));
+//=> { foo: 'bar' }
+
+myStore.subscribe('my.super.obj', function(e){
+  console.log(e.type, e.value); 
+  //=> my.super.obj { foo: 'hans' }
+});
+
+myStore.set('my.super.obj', {foo: 'hans'});
+
 ```
 
 
