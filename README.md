@@ -20,19 +20,23 @@ console.log(myStore.get('foo'));
 //=> 'bar'
 
 myStore.set('awesome', true);
+
 console.log(myStore.get('awesome'));
 //=> true
 
 // Use dot-notation to access nested properties
 myStore.set('bar.baz', true);
+
 console.log(myStore.get('bar'));
 //=> {baz: true}
 
 myStore.delete('awesome');
+
 console.log(myStore.get('awesome'));
 //=> null
 
 myStore.set('my.super.obj', {foo: 'bar'});
+
 console.log(myStore.get('my.super.obj'));
 //=> { foo: 'bar' }
 
