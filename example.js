@@ -1,5 +1,5 @@
-var store = require('./lib/index').store;
-var objToDot = require('./lib/utils');
+var store = require('./dist/ost').store;
+var {objToDot} = require('./lib/utils');
 
 const initialState = {
 

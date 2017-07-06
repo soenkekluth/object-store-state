@@ -6,5 +6,8 @@
         "loose": true
       }
     ]
+  ],
+  "plugins": [
+    "external-helpers"
   ]
 }
