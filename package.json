@@ -1,6 +1,6 @@
 {
   "name": "object-store-state",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "observable stateful object store",
   "moduleName": "ObjectStoreState",
   "jsnext:main": "dist/ost.es.js",
