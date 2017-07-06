@@ -60,7 +60,6 @@ console.log(myStore.toJSON());
   }
 }
 */
-
 ```
 
 ## API
