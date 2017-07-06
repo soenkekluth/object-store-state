@@ -18,17 +18,49 @@ console.log(myStore.get('foo'));
 //=> 'bar'
 
 myStore.set('awesome', true);
+
 console.log(myStore.get('awesome'));
 //=> true
 
 // Use dot-notation to access nested properties
 myStore.set('bar.baz', true);
+
 console.log(myStore.get('bar'));
 //=> {baz: true}
 
 myStore.delete('awesome');
+
 console.log(myStore.get('awesome'));
-//=> undefined
+//=> null
+
+myStore.set('my.super.obj', {foo: 'bar'});
+
+console.log(myStore.get('my.super.obj'));
+//=> { foo: 'bar' }
+
+myStore.subscribe('my.super.obj', function(e){
+  console.log(e.type, e.value); 
+  //=> my.super.obj { foo: 'hans' }
+});
+
+myStore.set('my.super.obj', {foo: 'hans'});
+
+console.log(myStore.toJSON());
+/* => {
+  "foo": "bar",
+  "bar": {
+    "baz": true
+  },
+  "my": {
+    "super": {
+      "obj": {
+        "foo": "hans"
+      }
+    }
+  }
+}
+*/
+
 ```
 
 ## API
